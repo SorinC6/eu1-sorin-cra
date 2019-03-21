@@ -1,28 +1,41 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import UserList from './components/UserList';
+import { Route } from 'react-router-dom';
+import UserInfo from './components/UserInfo';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+	state = {
+		users: [],
+		userMesseges: []
+	};
+
+	componentDidMount() {
+		axios
+			.get('https://post-app-test.herokuapp.com/api/users')
+			.then((res) => {
+				//console.log(res);
+				this.setState({
+					users: res.data
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
+	render() {
+		return (
+			<div className="App">
+				<h1>Lambda Day 3 challenge</h1>
+				<div>
+					<Route exact path="/" render={(props) => <UserList {...props} users={this.state.users} />} />
+					<Route path="/users/:id" render={(props) => <UserInfo {...props} />} />
+				</div>
+			</div>
+		);
+	}
 }
 
 export default App;
